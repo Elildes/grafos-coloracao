@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado - DSATUR</title>
+
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 20px; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 { color: #333; }
+        .success { color: green; }
+        .error { 
+            color: red; 
+            border: 1px solid red; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background: #ffebeb; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+        }
+        th, td { 
+            border: 1px solid #ccc; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { background-color: #f2f2f2; }
+        pre { 
+            background: #eee; 
+            padding: 10px; 
+            border-radius: 5px; 
+            overflow-x: auto; 
+        }
+        a { 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Resultado do Algoritmo DSATUR</h1>
+
+        {% if not success %}
+            <div class="error">
+                <p><strong>Erro:</strong> {{ error | default('Ocorreu um erro desconhecido.') }}</p>
+            </div>
+
+        {% else %}
+
+            <p class="success"><strong>{{ message }}</strong></p>
+            <p><strong>Arquivo:</strong> {{ filename }}</p>
+
+            <h2>Resumo</h2>
+            <p><strong>Número total de cores usadas:</strong> {{ results.color_count }}</p>
+
+            <hr>
+
+            <h2>Coloração dos Vértices</h2>
+            {% if results.colors %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vértice</th>
+                            <th>Cor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v, c in results.colors.items() | sort %}
+                            <tr>
+                                <td>{{ v }}</td>
+                                <td>{{ c }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Nenhuma cor atribuída.</p>
+            {% endif %}
+
+            <hr>
+
+            <h2>Ordem de Coloração</h2>
+            {% if results.order %}
+                <pre>{{ results.order | join(' -> ') }}</pre>
+            {% else %}
+                <p><em>Ordem não disponível.</em></p>
+            {% endif %}
+
+            <hr>
+
+            <h2>Histórico de Saturação</h2>
+            {% if results.saturation_history %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vértice</th>
+                            <th>Saturação (evolução)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v, history in results.saturation_history.items() | sort %}
+                            <tr>
+                                <td>{{ v }}</td>
+                                <td>
+                                    {% if history %}
+                                        {{ history | join(', ') }}
+                                    {% else %}
+                                        <em>Sem alterações</em>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p><em>Nenhum histórico de saturação disponível.</em></p>
+            {% endif %}
+
+        {% endif %}
+
+        <hr>
+        <a href="/">Voltar</a>
+    </div>
+
+</body>
+</html>
